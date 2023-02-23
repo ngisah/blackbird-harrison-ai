@@ -7,7 +7,8 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Snackbar from '@mui/material/Snackbar';
 import Typography from '@mui/material/Typography';
-import logo from '../../assets/logo.svg';
+// import logo from '../../assets/logo.svg';
+import emailValidator from "email-validator"
 
 
 export default function LoginForm() {
@@ -19,6 +20,17 @@ export default function LoginForm() {
     const password = data.get('password');
 
     // Add validation code here
+    const isEmailValid = emailValidator.validate(email);
+    const isPasswordValid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/.test(password);
+  
+    if (!isEmailValid) {
+      setShowAlert('Invalid email address');
+    } else if (!isPasswordValid) {
+      setShowAlert('Invalid password');
+    } else {
+      setShowAlert('Login successful');
+    }
+  
 
   }
 
@@ -30,7 +42,7 @@ export default function LoginForm() {
       password: data.get('password'),
     });
     validateForm(event);
-    setShowAlert("Login Successful");
+   
   };
 
   return (
@@ -87,6 +99,8 @@ export default function LoginForm() {
               name="email"
               autoComplete="email"
               autoFocus
+              error={showAlert && showAlert.includes('Invalid email')}
+              helperText={showAlert && showAlert.includes('Invalid email') && showAlert}
             />
             <TextField
               margin="normal"
@@ -97,6 +111,8 @@ export default function LoginForm() {
               type="password"
               id="password"
               autoComplete="current-password"
+              error={showAlert && showAlert.includes('Invalid password')}
+              helperText={showAlert && showAlert.includes('Invalid password') && showAlert}
             />
             <Button
               type="submit"
